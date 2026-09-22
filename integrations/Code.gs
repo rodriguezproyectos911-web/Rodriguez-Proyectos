@@ -55,27 +55,102 @@ function doPost(e) {
 function sendAlert_(p, tipo) {
   const nombre = clean_(p.nombre) || 'Sin nombre';
   const empresa = clean_(p.empresa) || 'Sin empresa';
+  const telefono = clean_(p.telefono);
+  const email = clean_(p.email);
+  const localidad = clean_(p.localidad);
+  const contratista = clean_(p.contratista);
   const urgencia = clean_(p.urgencia) || 'Media';
+  const detalle = clean_(p.detalle);
   const subject = 'Nuevo lead web | ' + empresa + ' | ' + urgencia;
+
   const body = [
     'Nuevo contacto desde Rodriguez Proyectos',
     '',
     'Nombre: ' + nombre,
     'Empresa: ' + empresa,
-    'Teléfono: ' + clean_(p.telefono),
-    'Email: ' + clean_(p.email),
-    'Localidad: ' + clean_(p.localidad),
+    'Teléfono: ' + telefono,
+    'Email: ' + email,
+    'Localidad: ' + localidad,
     'Necesidad: ' + tipo,
-    'Tiene contratista: ' + clean_(p.contratista),
+    'Tiene contratista: ' + contratista,
     'Urgencia: ' + urgencia,
     '',
     'Descripción:',
-    clean_(p.detalle),
+    detalle,
     '',
     'El lead fue registrado automáticamente en la hoja "Leads Landing".'
   ].join('\n');
 
-  MailApp.sendEmail(ALERT_EMAIL, subject, body);
+  const waNumber = whatsappNumber_(telefono);
+  const waText = encodeURIComponent(
+    'Hola ' + nombre + ', te contactamos de Rodriguez Proyectos. ' +
+    'Recibimos tu consulta por ' + (tipo || 'nuestros servicios') +
+    (empresa && empresa !== 'Sin empresa' ? ' para ' + empresa : '') +
+    '. ¿Podemos coordinar una breve llamada o visita técnica?'
+  );
+
+  const waUrl = waNumber ? 'https://wa.me/' + waNumber + '?text=' + waText : '';
+  const mailSubject = encodeURIComponent('Consulta Rodriguez Proyectos - ' + empresa);
+  const mailBody = encodeURIComponent(
+    'Hola ' + nombre + ',\n\n' +
+    'Gracias por contactarte con Rodriguez Proyectos. Recibimos tu consulta por ' +
+    (tipo || 'nuestros servicios') + '.\n\n' +
+    '¿Podés contarnos un poco más sobre el alcance o coordinar una visita técnica?\n\n' +
+    'Saludos,\nRodriguez Proyectos'
+  );
+  const mailUrl = email ? 'mailto:' + encodeURIComponent(email) + '?subject=' + mailSubject + '&body=' + mailBody : '';
+
+  const buttonStyle = 'display:inline-block;padding:12px 18px;margin:6px 8px 6px 0;border-radius:6px;text-decoration:none;font-weight:700;color:#111;background:#ffc400;';
+  const secondaryButtonStyle = 'display:inline-block;padding:12px 18px;margin:6px 8px 6px 0;border-radius:6px;text-decoration:none;font-weight:700;color:#fff;background:#2e2e33;';
+
+  const actions = [
+    waUrl ? '<a href="' + waUrl + '" style="' + buttonStyle + '">Abrir WhatsApp</a>' : '',
+    mailUrl ? '<a href="' + mailUrl + '" style="' + secondaryButtonStyle + '">Responder por email</a>' : ''
+  ].join('');
+
+  const htmlBody =
+    '<div style="font-family:Arial,sans-serif;max-width:640px;color:#222">' +
+      '<h2 style="margin-bottom:6px">Nuevo lead - Rodriguez Proyectos</h2>' +
+      '<p style="margin-top:0"><strong>' + escHtml_(empresa) + '</strong> · Urgencia: <strong>' + escHtml_(urgencia) + '</strong></p>' +
+      '<table cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%">' +
+        '<tr><td><strong>Nombre</strong></td><td>' + escHtml_(nombre) + '</td></tr>' +
+        '<tr><td><strong>Empresa</strong></td><td>' + escHtml_(empresa) + '</td></tr>' +
+        '<tr><td><strong>Teléfono</strong></td><td>' + escHtml_(telefono) + '</td></tr>' +
+        '<tr><td><strong>Email</strong></td><td>' + escHtml_(email) + '</td></tr>' +
+        '<tr><td><strong>Localidad</strong></td><td>' + escHtml_(localidad) + '</td></tr>' +
+        '<tr><td><strong>Necesidad</strong></td><td>' + escHtml_(tipo) + '</td></tr>' +
+        '<tr><td><strong>Contratista</strong></td><td>' + escHtml_(contratista) + '</td></tr>' +
+        '<tr><td><strong>Urgencia</strong></td><td>' + escHtml_(urgencia) + '</td></tr>' +
+      '</table>' +
+      '<p><strong>Descripción</strong><br>' + escHtml_(detalle || 'Sin descripción') + '</p>' +
+      '<div style="margin:18px 0">' + actions + '</div>' +
+      '<p style="font-size:12px;color:#666">El lead fue registrado automáticamente en la hoja "Leads Landing".</p>' +
+    '</div>';
+
+  MailApp.sendEmail({
+    to: ALERT_EMAIL,
+    subject: subject,
+    body: body,
+    htmlBody: htmlBody
+  });
+}
+
+function whatsappNumber_(telefono) {
+  let n = String(telefono || '').replace(/\D/g, '');
+  if (!n) return '';
+  if (n.startsWith('00')) n = n.slice(2);
+  if (n.startsWith('54')) return n;
+  if (n.startsWith('0')) n = n.slice(1);
+  return '54' + n;
+}
+
+function escHtml_(v) {
+  return String(v == null ? '' : v)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function clean_(v) {

@@ -127,14 +127,31 @@
           <label>Empresa<input name="empresa" /></label>
           <label>Email<input required type="email" name="email" /></label>
           <label>Teléfono<input name="telefono" /></label>
+          <label>Localidad<input name="localidad" placeholder="Ej. Garín, Escobar, Tigre" /></label>
           <label>¿Qué necesita resolver?
             <select name="tipo">
               <option>Obra civil industrial</option><option>Montaje industrial</option><option>Instalaciones técnicas</option><option>Mantenimiento industrial integral</option><option>Laboratorios y Farma</option><option>Logística y Depósitos</option><option>Refrigeración y Frío Industrial</option><option>Adicional / Post-obra / Urgencia</option>
             </select>
           </label>
+          <label>¿Ya tiene contratista?
+            <select name="contratista">
+              <option value="">Seleccionar</option>
+              <option>Sí</option>
+              <option>No</option>
+              <option>Parcial / por rubros</option>
+            </select>
+          </label>
+          <label>Urgencia
+            <select name="urgencia">
+              <option>Media</option>
+              <option>Alta</option>
+              <option>Baja</option>
+              <option>Urgente</option>
+            </select>
+          </label>
           <label>Detalle<textarea name="detalle" rows="5" placeholder="Contanos brevemente qué necesitan, ubicación y etapa del proyecto."></textarea></label>
-          <button class="btn primary" type="submit">Preparar consulta</button>
-          <small>Esta versión abre un email listo para enviar. La conexión directa con CRM queda preparada como siguiente integración.</small>
+          <button class="btn primary" type="submit">Enviar consulta</button>
+          <small>La consulta se registra automáticamente en nuestro sistema para poder responder y coordinar el siguiente paso.</small>
         </form>
       </div>
     </section>

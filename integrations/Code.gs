@@ -1,5 +1,6 @@
 const SPREADSHEET_ID = '10bMMo6FAOlAmdUnTwgrJfSa43klfvTeeG4qM3gWEK2E';
 const SHEET_NAME = 'Leads Landing';
+const VISITS_SHEET_NAME = 'Visitas Landing';
 const ALERT_EMAIL = 'rodriguezproyectos911@gmail.com';
 
 function doGet() {
@@ -12,6 +13,26 @@ function doPost(e) {
   try {
     const p = e && e.parameter ? e.parameter : {};
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+    if (clean_(p.event) === 'visit') {
+      const visits = ss.getSheetByName(VISITS_SHEET_NAME);
+      if (!visits) throw new Error('No existe la hoja ' + VISITS_SHEET_NAME);
+      visits.appendRow([
+        new Date(),
+        'Visita',
+        clean_(p.source) || 'directo',
+        clean_(p.medium) || 'web',
+        clean_(p.campaign),
+        clean_(p.company),
+        clean_(p.url),
+        clean_(p.referrer),
+        clean_(p.session)
+      ]);
+      return ContentService
+        .createTextOutput(JSON.stringify({ok:true,event:'visit'}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     const sh = ss.getSheetByName(SHEET_NAME);
     if (!sh) throw new Error('No existe la hoja ' + SHEET_NAME);
 

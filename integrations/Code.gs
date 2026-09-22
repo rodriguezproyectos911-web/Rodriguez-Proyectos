@@ -83,10 +83,11 @@ function sendAlert_(p, tipo) {
 
   const waNumber = whatsappNumber_(telefono);
   const waText = encodeURIComponent(
-    'Hola ' + nombre + ', te contactamos de Rodriguez Proyectos. ' +
+    'Hola ' + nombre + ', ¿cómo estás? Soy de Rodriguez Proyectos. ' +
     'Recibimos tu consulta por ' + (tipo || 'nuestros servicios') +
     (empresa && empresa !== 'Sin empresa' ? ' para ' + empresa : '') +
-    '. ¿Podemos coordinar una breve llamada o visita técnica?'
+    '. Para orientarte mejor, podemos coordinar una breve llamada o una visita técnica. ' +
+    '¿Qué opción te resulta más cómoda?'
   );
 
   const waUrl = waNumber ? 'https://wa.me/' + waNumber + '?text=' + waText : '';
@@ -94,9 +95,13 @@ function sendAlert_(p, tipo) {
   const mailBody = encodeURIComponent(
     'Hola ' + nombre + ',\n\n' +
     'Gracias por contactarte con Rodriguez Proyectos. Recibimos tu consulta por ' +
-    (tipo || 'nuestros servicios') + '.\n\n' +
-    '¿Podés contarnos un poco más sobre el alcance o coordinar una visita técnica?\n\n' +
-    'Saludos,\nRodriguez Proyectos'
+    (tipo || 'nuestros servicios') +
+    (empresa && empresa !== 'Sin empresa' ? ' para ' + empresa : '') +
+    '.\n\n' +
+    'Para poder orientarte correctamente, nos gustaría conocer un poco más sobre el alcance, la etapa actual y los tiempos que están manejando. ' +
+    'También podemos coordinar una llamada breve o una visita técnica.\n\n' +
+    'Quedamos atentos para avanzar.\n\n' +
+    'Saludos,\nRodriguez Proyectos\nServicios Industriales Integrales'
   );
   const mailUrl = email ? 'mailto:' + encodeURIComponent(email) + '?subject=' + mailSubject + '&body=' + mailBody : '';
 

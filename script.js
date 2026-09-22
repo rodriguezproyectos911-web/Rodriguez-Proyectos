@@ -1,9 +1,32 @@
+const CRM_ENDPOINT = ''; // Pegar aquí la URL /exec del Apps Script cuando quede desplegado.
+
 const form=document.getElementById('leadForm');
-form.addEventListener('submit',e=>{
- e.preventDefault(); const d=new FormData(form);
+form.addEventListener('submit',async e=>{
+ e.preventDefault();
+ const d=new FormData(form);
+ const btn=form.querySelector('button[type="submit"]');
+ const original=btn.textContent;
+ btn.disabled=true;
+ btn.textContent='Enviando...';
+
+ try {
+   if(CRM_ENDPOINT){
+     const payload=new URLSearchParams();
+     for(const [k,v] of d.entries()) payload.append(k,v);
+     payload.append('origen','Landing web');
+     await fetch(CRM_ENDPOINT,{method:'POST',body:payload,mode:'no-cors'});
+     btn.textContent='Consulta recibida';
+     form.reset();
+     setTimeout(()=>{btn.disabled=false;btn.textContent=original;},2500);
+     return;
+   }
+ } catch(err){ console.error('CRM submit error',err); }
+
  const subject=`Consulta web - ${d.get('tipo')} - ${d.get('empresa')||d.get('nombre')}`;
  const body=`Nombre: ${d.get('nombre')}\nEmpresa: ${d.get('empresa')}\nEmail: ${d.get('email')}\nTeléfono: ${d.get('telefono')}\nTipo de necesidad: ${d.get('tipo')}\n\nDetalle:\n${d.get('detalle')||''}`;
  window.location.href=`mailto:rodriguezproyectos911@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+ btn.disabled=false;
+ btn.textContent=original;
 });
 
 const panel=document.getElementById('assistantPanel');

@@ -73,6 +73,25 @@ function showVisitForm(){
         <option>Adicional / Post-obra / Urgencia</option>
       </select>
     </label>
+    <label>Localidad<input name="localidad" placeholder="Ej. Garín, Escobar, Tigre"></label>
+    <div class="assistant-two">
+      <label>¿Ya tiene contratista?
+        <select name="contratista">
+          <option value="">Seleccionar</option>
+          <option>Sí</option>
+          <option>No</option>
+          <option>Parcial / por rubros</option>
+        </select>
+      </label>
+      <label>Urgencia
+        <select name="urgencia">
+          <option>Media</option>
+          <option>Alta</option>
+          <option>Baja</option>
+          <option>Urgente</option>
+        </select>
+      </label>
+    </div>
     <label>Breve descripción<textarea name="detalle" rows="3" placeholder="Ubicación, necesidad y etapa del proyecto."></textarea></label>
     <p class="assistant-error" id="assistantError" hidden>Ingresá al menos un teléfono o un email para poder contactarte.</p>
     <button class="assistant-submit" type="submit">Continuar con la solicitud</button>
@@ -91,11 +110,13 @@ function showVisitForm(){
       document.getElementById('assistantError').hidden=false;
       return;
     }
-    ['nombre','empresa','telefono','email','detalle'].forEach(name=>{
+    ['nombre','empresa','telefono','email','localidad','detalle'].forEach(name=>{
       const target=form.elements[name];
       if(target) target.value=d.get(name)||'';
     });
     if(form.elements.tipo) form.elements.tipo.value=d.get('tipo');
+    if(form.elements.contratista && d.get('contratista')) form.elements.contratista.value=d.get('contratista');
+    if(form.elements.urgencia && d.get('urgencia')) form.elements.urgencia.value=d.get('urgencia');
     closeAssistant();
     document.getElementById('contacto').scrollIntoView({behavior:'smooth',block:'start'});
     setTimeout(()=>form.elements.detalle?.focus(),600);

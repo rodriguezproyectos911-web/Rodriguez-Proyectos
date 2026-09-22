@@ -1,4 +1,4 @@
-const CRM_ENDPOINT = ''; // Pegar aquí la URL /exec del Apps Script cuando quede desplegado.
+const CRM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxixlj7MF5Zu9e3Uy53DLVvzs2tTWrJLct4qybdSnZ_8obTCfB5qnDKPk9G7KGeaL9q/exec'; // Pegar aquí la URL /exec del Apps Script cuando quede desplegado.
 
 const form=document.getElementById('leadForm');
 form.addEventListener('submit',async e=>{

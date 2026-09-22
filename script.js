@@ -1,5 +1,41 @@
 const CRM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwFbrk8LHDGAm5Zfc_TVKm5rtRfcEgBzUh82evS6tMdiLnLkL-Na5XH_0wDxY74FOg/exec'; // Pegar aquí la URL /exec del Apps Script cuando quede desplegado.
 
+function attribution_(){
+  const q=new URLSearchParams(window.location.search);
+  return {
+    source:q.get('utm_source')||'directo',
+    medium:q.get('utm_medium')||'web',
+    campaign:q.get('utm_campaign')||'',
+    company:q.get('utm_company')||''
+  };
+}
+
+function sessionId_(){
+  let id=localStorage.getItem('rp_session');
+  if(!id){
+    id='rp_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);
+    localStorage.setItem('rp_session',id);
+  }
+  return id;
+}
+
+function trackLandingVisit_(){
+  if(!CRM_ENDPOINT) return;
+  const a=attribution_();
+  const payload=new URLSearchParams();
+  payload.append('event','visit');
+  payload.append('source',a.source);
+  payload.append('medium',a.medium);
+  payload.append('campaign',a.campaign);
+  payload.append('company',a.company);
+  payload.append('url',window.location.href);
+  payload.append('referrer',document.referrer||'');
+  payload.append('session',sessionId_());
+  fetch(CRM_ENDPOINT,{method:'POST',body:payload,mode:'no-cors'}).catch(()=>{});
+}
+
+trackLandingVisit_();
+
 const form=document.getElementById('leadForm');
 form.addEventListener('submit',async e=>{
  e.preventDefault();
@@ -13,7 +49,13 @@ form.addEventListener('submit',async e=>{
    if(CRM_ENDPOINT){
      const payload=new URLSearchParams();
      for(const [k,v] of d.entries()) payload.append(k,v);
-     payload.append('origen','Landing web');
+     const a=attribution_();
+    const originParts=['Landing web'];
+    if(a.source && a.source!=='directo') originParts.push(a.source);
+    if(a.campaign) originParts.push(a.campaign);
+    if(a.company) originParts.push(a.company);
+    payload.append('origen',originParts.join(' | '));
+    payload.append('notas',[a.medium,a.campaign,a.company].filter(Boolean).join(' | '));
      await fetch(CRM_ENDPOINT,{method:'POST',body:payload,mode:'no-cors'});
      btn.textContent='Consulta recibida';
      form.reset();

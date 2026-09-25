@@ -88,6 +88,7 @@ document.addEventListener('click',e=>{
 });
 
 const replies={
+ estimacion:'Sí. Si nos enviás una descripción clara, medidas o cantidades aproximadas y, cuando corresponda, fotos o planos, podemos preparar una estimación preliminar de costo y plazo antes de coordinar una visita. Es orientativa y se confirma luego del relevamiento técnico.',
  obra:'Sí. Podemos tomar una obra completa y coordinar distintos rubros con un solo responsable, o dividirla por etapas.',
  contratista:'Perfecto. No necesitamos reemplazarlo. Podemos tomar adicionales, trabajos fuera de alcance, refuerzos, correcciones o partidas puntuales.',
  mantenimiento:'Trabajamos mantenimiento preventivo y correctivo, edilicio, eléctrico, mecánico, sanitario, refrigeración y atención de urgencias.'
@@ -167,5 +168,18 @@ function showVisitForm(){
 
 document.querySelectorAll('.assistant-quick button').forEach(b=>b.onclick=()=>{
   if(b.dataset.q==='visita') return showVisitForm();
+  if(b.dataset.q==='estimacion'){
+    messages.innerHTML+=`<p><b>${b.textContent}</b><br>${replies[b.dataset.q]}</p><p><a href="#contacto" id="assistantEstimateLink">Completar datos para evaluación inicial →</a></p>`;
+    setTimeout(()=>{
+      const link=document.getElementById('assistantEstimateLink');
+      if(link) link.onclick=()=>{
+        closeAssistant();
+        if(form.elements.detalle && !form.elements.detalle.value) form.elements.detalle.value='Solicito una estimación preliminar de costo y plazo. ';
+        document.getElementById('contacto').scrollIntoView({behavior:'smooth',block:'start'});
+        setTimeout(()=>form.elements.detalle?.focus(),600);
+      };
+    },0);
+    return;
+  }
   messages.innerHTML+=`<p><b>${b.textContent}</b><br>${replies[b.dataset.q]}</p>`;
 });

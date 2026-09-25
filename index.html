@@ -32,8 +32,8 @@
         <h1>Resolvemos lo que su proyecto necesita.</h1>
         <p class="lead">Podemos tomar el proyecto completo o sumarnos justo donde haga falta: obra civil, montaje, instalaciones, mantenimiento, adicionales, urgencias o post-obra.</p>
         <div class="actions">
-          <a class="btn primary" href="#contacto">Coordinar visita técnica</a>
-          <a class="btn secondary" href="#servicios">Ver servicios</a>
+          <a class="btn primary" href="#contacto">Solicitar estimación preliminar</a>
+          <a class="btn secondary" href="#contacto">Coordinar visita técnica</a>
         </div>
         <div class="hero-proof">
           <span>Respuesta ágil</span><span>Coordinación integral</span><span>Trabajo en planta operativa</span>
@@ -84,13 +84,21 @@
     </section>
 
     <section id="como-trabajamos" class="process wrap">
-      <div class="process-copy"><p class="eyebrow dark">CÓMO TRABAJAMOS</p><h2>Simple, claro y orientado a resolver.</h2></div>
+      <div class="process-copy"><p class="eyebrow dark">CÓMO TRABAJAMOS</p><h2>Primero una referencia. Después, precisión.</h2></div>
       <ol>
-        <li><strong>1. Nos cuentan la necesidad</strong><span>Fotos, planos, alcance o una breve descripción.</span></li>
-        <li><strong>2. Relevamos</strong><span>Coordinamos visita técnica si hace falta.</span></li>
-        <li><strong>3. Definimos alcance</strong><span>Propuesta concreta, etapas y responsabilidades.</span></li>
-        <li><strong>4. Ejecutamos</strong><span>Obra completa o intervención puntual, coordinada con su operación y proveedores.</span></li>
+        <li><strong>1. Nos cuentan la necesidad</strong><span>Descripción, fotos, videos, medidas, planos o alcance disponible.</span></li>
+        <li><strong>2. Estimación preliminar</strong><span>Si la información alcanza, damos un rango orientativo de costo y plazo antes de coordinar una visita.</span></li>
+        <li><strong>3. Relevamiento técnico</strong><span>Si el rango resulta razonable, coordinamos visita para validar medidas, accesos, materiales y condiciones reales.</span></li>
+        <li><strong>4. Presupuesto final</strong><span>Ajustamos alcance, precio, plazo y responsabilidades con lo relevado.</span></li>
+        <li><strong>5. Ejecutamos</strong><span>Obra completa o intervención puntual, coordinada con su operación y proveedores.</span></li>
       </ol>
+    </section>
+
+    <section class="intro wrap" aria-labelledby="estimacion-title">
+      <p class="eyebrow dark">ESTIMACIÓN PRELIMINAR</p>
+      <h2 id="estimacion-title">Una idea de costo y plazo, antes de comprometer una visita.</h2>
+      <p>Con fotos, medidas y una breve descripción podemos preparar una referencia inicial para saber si el proyecto está dentro del rango esperado. Esa estimación no reemplaza al presupuesto final: se confirma y ajusta luego del relevamiento técnico, especialmente si aparecen condiciones no visibles o cambios de alcance.</p>
+      <p><strong>Objetivo:</strong> ahorrar tiempo de ambas partes y avanzar a la visita cuando el rango preliminar tenga sentido.</p>
     </section>
 
     <section class="showcase-links wrap" aria-label="Áreas de experiencia">
@@ -118,8 +126,9 @@
       <div class="wrap contact-grid">
         <div>
           <p class="eyebrow">HABLEMOS DE SU PROYECTO</p>
-          <h2>¿Tiene una obra, un adicional o algo que necesita resolver?</h2>
-          <p>Envíenos una breve descripción del proyecto. A partir de ahí coordinamos el relevamiento y definimos la mejor forma de avanzar.</p>
+          <h2>¿Quiere una idea de costo y plazo antes de coordinar una visita?</h2>
+          <p>Envíenos una breve descripción, medidas disponibles y el alcance del trabajo. Si la información es suficiente, podemos preparar una estimación preliminar de costo y plazo. Luego, si el rango resulta razonable, coordinamos el relevamiento técnico y emitimos el presupuesto final.</p>
+          <p><small>La estimación preliminar es orientativa y queda sujeta a relevamiento técnico, condiciones no visibles y confirmación del alcance.</small></p>
           <a class="email-link" href="mailto:rodriguezproyectos911@gmail.com">rodriguezproyectos911@gmail.com</a>
         </div>
         <form id="leadForm" class="lead-form">
@@ -149,9 +158,9 @@
               <option>Urgente</option>
             </select>
           </label>
-          <label>Detalle<textarea name="detalle" rows="5" placeholder="Contanos brevemente qué necesitan, ubicación y etapa del proyecto."></textarea></label>
-          <button class="btn primary" type="submit">Enviar consulta</button>
-          <small>La consulta se registra automáticamente en nuestro sistema para poder responder y coordinar el siguiente paso.</small>
+          <label>Detalle<textarea name="detalle" rows="5" placeholder="Contanos qué necesitan, ubicación, etapa del proyecto y, si las tenés, medidas o cantidades aproximadas."></textarea></label>
+          <button class="btn primary" type="submit">Solicitar evaluación inicial</button>
+          <small>La consulta se registra automáticamente. Si con la información enviada podemos estimar el trabajo, te damos primero un rango orientativo de costo y plazo; si hace falta, después coordinamos visita técnica.</small>
         </form>
       </div>
     </section>
@@ -160,8 +169,9 @@
   <button id="assistantBtn" class="assistant-btn">¿Tenés una duda?</button>
   <aside id="assistantPanel" class="assistant-panel" aria-hidden="true">
     <div class="assistant-head"><strong>Asistente Rodriguez</strong><button id="assistantClose">×</button></div>
-    <div id="assistantMessages" class="assistant-messages"><p><b>Hola.</b> Puedo orientarte sobre servicios, visitas técnicas y tipos de obra.</p></div>
+    <div id="assistantMessages" class="assistant-messages"><p><b>Hola.</b> Puedo orientarte sobre servicios, estimaciones preliminares, visitas técnicas y tipos de obra.</p></div>
     <div class="assistant-quick">
+      <button data-q="estimacion">Quiero una estimación preliminar</button>
       <button data-q="obra">¿Toman obra completa?</button>
       <button data-q="contratista">Ya tengo contratista</button>
       <button data-q="mantenimiento">Necesito mantenimiento</button>

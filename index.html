@@ -135,7 +135,7 @@
           <label>Nombre<input required name="nombre" /></label>
           <label>Empresa<input name="empresa" /></label>
           <label>Email<input required type="email" name="email" /></label>
-          <label>Teléfono<input name="telefono" /></label>
+          <label>Teléfono<input name="telefono" type="tel" autocomplete="tel" /></label>
           <label>Localidad<input name="localidad" placeholder="Ej. Garín, Escobar, Tigre" /></label>
           <label>¿Qué necesita resolver?
             <select name="tipo">
@@ -160,7 +160,8 @@
           </label>
           <label>Detalle<textarea name="detalle" rows="5" placeholder="Contanos qué necesitan, ubicación, etapa del proyecto y, si las tenés, medidas o cantidades aproximadas."></textarea></label>
           <button class="btn primary" type="submit">Solicitar evaluación inicial</button>
-          <small>La consulta se registra automáticamente. Si con la información enviada podemos estimar el trabajo, te damos primero un rango orientativo de costo y plazo; si hace falta, después coordinamos visita técnica.</small>
+          <p id="leadFormStatus" role="status" aria-live="polite" hidden></p>
+          <small>El formulario envía los datos a nuestro equipo. La confirmación de recepción puede demorar y, si es necesario, podés escribirnos al correo indicado. Una estimación preliminar es orientativa y queda sujeta a relevamiento técnico.</small>
         </form>
       </div>
     </section>

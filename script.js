@@ -37,6 +37,16 @@ function trackLandingVisit_(){
 trackLandingVisit_();
 
 const form=document.getElementById('leadForm');
+const leadStatus=document.getElementById('leadFormStatus');
+form.addEventListener('input',()=>{
+  const btn=form.querySelector('button[type="submit"]');
+  if(btn.dataset.pendingEdit==='true'){
+    btn.dataset.pendingEdit='false';
+    btn.disabled=false;
+    btn.textContent='Solicitar evaluación inicial';
+    if(leadStatus){leadStatus.hidden=true;leadStatus.textContent='';}
+  }
+});
 form.addEventListener('submit',async e=>{
  e.preventDefault();
  const d=new FormData(form);
@@ -44,6 +54,7 @@ form.addEventListener('submit',async e=>{
  const original=btn.textContent;
  btn.disabled=true;
  btn.textContent='Enviando...';
+ if(leadStatus){leadStatus.hidden=true;leadStatus.textContent='';}
 
  try {
    if(CRM_ENDPOINT){
@@ -56,17 +67,35 @@ form.addEventListener('submit',async e=>{
     if(a.company) originParts.push(a.company);
     payload.append('origen',originParts.join(' | '));
     payload.append('notas',[a.medium,a.campaign,a.company].filter(Boolean).join(' | '));
-     await fetch(CRM_ENDPOINT,{method:'POST',body:payload,mode:'no-cors'});
-     btn.textContent='Consulta recibida';
-     form.reset();
-     setTimeout(()=>{btn.disabled=false;btn.textContent=original;},2500);
+     const response=await fetch(CRM_ENDPOINT,{method:'POST',body:payload,mode:'no-cors'});
+     // no-cors devuelve una respuesta "opaque": NO certifica que Apps Script haya guardado el lead.
+     if(response.type!=='opaque' && !response.ok){
+       throw new Error('El servidor rechazó la solicitud: '+response.status);
+     }
+     if(leadStatus){
+       leadStatus.textContent=response.type==='opaque'
+         ? 'Solicitud enviada para procesamiento. La página no puede confirmar automáticamente el registro; si no recibís respuesta, escribinos por email.'
+         : 'El servidor respondió a la solicitud. Te contactaremos cuando podamos revisar los datos.';
+       leadStatus.hidden=false;
+     }
+     // Conservar los datos evita perder la consulta ante una falla de procesamiento.
+     btn.textContent=response.type==='opaque'?'Enviado (sin confirmar)':'Enviado';
+     btn.dataset.pendingEdit='true';
      return;
    }
  } catch(err){ console.error('CRM submit error',err); }
 
  const subject=`Consulta web - ${d.get('tipo')} - ${d.get('empresa')||d.get('nombre')}`;
  const body=`Nombre: ${d.get('nombre')}\nEmpresa: ${d.get('empresa')}\nEmail: ${d.get('email')}\nTeléfono: ${d.get('telefono')}\nTipo de necesidad: ${d.get('tipo')}\n\nDetalle:\n${d.get('detalle')||''}`;
- window.location.href=`mailto:rodriguezproyectos911@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+ const fallbackUrl=`mailto:rodriguezproyectos911@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+ if(leadStatus){
+   leadStatus.textContent='No se pudo completar el envío automático. ';
+   const fallbackLink=document.createElement('a');
+   fallbackLink.href=fallbackUrl;
+   fallbackLink.textContent='Abrir correo para enviar manualmente';
+   leadStatus.appendChild(fallbackLink);
+   leadStatus.hidden=false;
+ }
  btn.disabled=false;
  btn.textContent=original;
 });
@@ -102,7 +131,7 @@ function showVisitForm(){
     <label>Empresa<input name="empresa" autocomplete="organization"></label>
     <div class="assistant-two">
       <label>Teléfono<input name="telefono" autocomplete="tel"></label>
-      <label>Email<input name="email" type="email" autocomplete="email"></label>
+      <label>Email (obligatorio para continuar)<input name="email" type="email" required autocomplete="email"></label>
     </div>
     <label>¿Qué necesitan resolver?
       <select name="tipo">
@@ -136,7 +165,7 @@ function showVisitForm(){
       </label>
     </div>
     <label>Breve descripción<textarea name="detalle" rows="3" placeholder="Ubicación, necesidad y etapa del proyecto."></textarea></label>
-    <p class="assistant-error" id="assistantError" hidden>Ingresá al menos un teléfono o un email para poder contactarte.</p>
+    <p class="assistant-error" id="assistantError" hidden>Ingresá un email válido para continuar.</p>
     <button class="assistant-submit" type="submit">Continuar con la solicitud</button>
     <button class="assistant-back" type="button" id="assistantBack">Volver</button>
   </form>`;
@@ -149,7 +178,7 @@ function showVisitForm(){
   visitForm.onsubmit=e=>{
     e.preventDefault();
     const d=new FormData(visitForm);
-    if(!String(d.get('telefono')||'').trim() && !String(d.get('email')||'').trim()){
+    if(!String(d.get('email')||'').trim()){
       document.getElementById('assistantError').hidden=false;
       return;
     }
